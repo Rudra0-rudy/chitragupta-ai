@@ -30,7 +30,7 @@ export function Navbar() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-slate-950/80 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/30'
+          ? 'bg-[#F5F2E8] border-b-2 border-[#1A1A18]'
           : 'bg-transparent'
       }`}
     >
@@ -39,13 +39,12 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="relative">
-              <div className="absolute inset-0 rounded-lg bg-blue-500/30 blur-md group-hover:bg-blue-400/50 transition-all duration-300" />
-              <div className="relative p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-                <Shield className="w-5 h-5 text-white" />
+              <div className="relative p-1.5 rounded-none bg-[#1E3878] border-2 border-[#1A1A18] text-[#F5F2E8]">
+                <Shield className="w-5 h-5 text-[#F5F2E8]" />
               </div>
             </div>
-            <span className="text-white font-semibold text-lg tracking-tight">
-              Chitragupta <span className="text-blue-400">AI</span>
+            <span className="font-black uppercase tracking-tight text-[#1A1A18] text-lg">
+              Chitragupta <span className="text-[#1E3878]">AI</span>
             </span>
           </Link>
 
@@ -55,7 +54,7 @@ export function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="px-4 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-200"
+                className="px-4 py-2 text-sm text-[#1A1A18] hover:text-[#1E3878] rounded-none hover:bg-[#E8C018] transition-all duration-200"
               >
                 {link.label}
               </a>
@@ -70,14 +69,14 @@ export function Navbar() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('/dashboard')}
-                  className="text-slate-300 hover:text-white hover:bg-white/10"
+                  className="text-[#1A1A18] hover:text-[#1E3878] rounded-none hover:bg-[#E8C018]"
                 >
                   Dashboard
                 </Button>
                 <Button
                   size="sm"
                   onClick={logout}
-                  className="bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 hover:text-red-300"
+                  className="bg-[#F5F2E8] text-[#C8302A] border-2 border-[#1A1A18] rounded-none font-bold uppercase hover:bg-[#C8302A] hover:text-[#F5F2E8]"
                 >
                   Logout
                 </Button>
@@ -87,7 +86,7 @@ export function Navbar() {
                 id="navbar-login-btn"
                 size="sm"
                 onClick={() => navigate('/login')}
-                className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
+                className="bg-[#1E3878] hover:bg-[#1A1A18] text-[#F5F2E8] border-2 border-[#1A1A18] rounded-none font-bold uppercase transition-all duration-300"
               >
                 Login
               </Button>
@@ -97,7 +96,7 @@ export function Navbar() {
           {/* Mobile hamburger */}
           <button
             id="mobile-menu-btn"
-            className="md:hidden text-slate-300 hover:text-white p-2"
+            className="md:hidden text-[#1A1A18] hover:text-[#1E3878] p-2"
             onClick={() => setMobileOpen((v) => !v)}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -113,7 +112,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden bg-slate-950/95 backdrop-blur-xl border-t border-white/10"
+            className="md:hidden bg-[#F5F2E8] border-t-2 border-[#1A1A18]"
           >
             <div className="px-4 py-4 flex flex-col gap-2">
               {navLinks.map((link) => (
@@ -121,17 +120,17 @@ export function Navbar() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="px-4 py-2.5 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                  className="px-4 py-2.5 text-sm text-[#1A1A18] hover:text-[#1E3878] rounded-none hover:bg-[#E8C018] transition-all"
                 >
                   {link.label}
                 </a>
               ))}
-              <div className="pt-2 border-t border-white/10">
+              <div className="pt-2 border-t-2 border-[#1A1A18]">
                 {isAuthenticated ? (
                   <Button
                     size="sm"
                     onClick={() => { navigate('/dashboard'); setMobileOpen(false) }}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                    className="w-full bg-[#1E3878] hover:bg-[#1A1A18] text-[#F5F2E8] border-2 border-[#1A1A18] rounded-none font-bold uppercase"
                   >
                     Dashboard
                   </Button>
@@ -139,7 +138,7 @@ export function Navbar() {
                   <Button
                     size="sm"
                     onClick={() => { navigate('/login'); setMobileOpen(false) }}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                    className="w-full bg-[#1E3878] hover:bg-[#1A1A18] text-[#F5F2E8] border-2 border-[#1A1A18] rounded-none font-bold uppercase"
                   >
                     Login
                   </Button>

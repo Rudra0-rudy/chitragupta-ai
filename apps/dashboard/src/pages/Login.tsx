@@ -39,23 +39,9 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden px-4">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 to-indigo-950/30" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(148, 163, 184, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 1) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
-          }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-blue-500/20 blur-3xl"
-        />
-      </div>
+    <div className="min-h-screen bg-[#F5F2E8] flex items-center justify-center relative overflow-hidden px-4">
+      {/* Solid background */}
+      <div className="absolute inset-0 bg-[#F5F2E8]" />
 
       {/* Back button */}
       <motion.button
@@ -63,7 +49,7 @@ export function Login() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 }}
         onClick={() => navigate('/')}
-        className="absolute top-6 left-6 flex items-center gap-2 text-slate-400 hover:text-white text-sm transition-colors"
+        className="absolute top-6 left-6 flex items-center gap-2 text-[#1A1A18] hover:text-[#1E3878] text-sm transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Home
@@ -76,26 +62,23 @@ export function Login() {
         transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
         className="relative z-10 w-full max-w-md"
       >
-        <Card className="bg-slate-900/80 backdrop-blur-xl border-white/15 shadow-2xl shadow-black/50">
+        <Card className="bg-white border-2 border-[#1A1A18] rounded-none">
           <CardHeader className="text-center pb-6 pt-8">
             {/* Logo */}
             <div className="flex justify-center mb-5">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-2xl bg-blue-500/40 blur-xl" />
-                <div className="relative p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
+              <div className="relative p-4 rounded-none bg-[#1E3878] border-2 border-[#1A1A18]">
+                <Shield className="w-8 h-8 text-[#F5F2E8]" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1">Welcome back</h1>
-            <p className="text-slate-400 text-sm">Sign in to Chitragupta AI</p>
+            <h1 className="text-2xl font-bold text-[#1A1A18] mb-1">Welcome back</h1>
+            <p className="text-[#4A4845] text-sm">Sign in to Chitragupta AI</p>
           </CardHeader>
 
           <CardContent className="px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-4" id="login-form">
               {/* Email */}
               <div className="space-y-1.5">
-                <label htmlFor="login-email" className="text-sm text-slate-300 font-medium">
+                <label htmlFor="login-email" className="text-sm text-[#1A1A18] font-medium">
                   Email address
                 </label>
                 <Input
@@ -104,14 +87,14 @@ export function Login() {
                   placeholder="officer@mplads.gov.in"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-slate-800/60 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20 h-11"
+                  className="bg-white border-2 border-[#1A1A18] text-[#1A1A18] placeholder:text-[#8A8680] h-11 rounded-none"
                   autoComplete="email"
                 />
               </div>
 
               {/* Password */}
               <div className="space-y-1.5">
-                <label htmlFor="login-password" className="text-sm text-slate-300 font-medium">
+                <label htmlFor="login-password" className="text-sm text-[#1A1A18] font-medium">
                   Password
                 </label>
                 <div className="relative">
@@ -121,14 +104,14 @@ export function Login() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-800/60 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20 h-11 pr-10"
+                    className="bg-white border-2 border-[#1A1A18] text-[#1A1A18] placeholder:text-[#8A8680] h-11 pr-10 rounded-none"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     id="toggle-password-btn"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1A18] hover:text-[#1E3878] transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -140,7 +123,7 @@ export function Login() {
                 <motion.p
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+                  className="text-[#C8302A] text-sm bg-white border-2 border-[#C8302A] rounded-none font-bold px-3 py-2"
                 >
                   {error}
                 </motion.p>
@@ -151,7 +134,7 @@ export function Login() {
                 id="login-submit-btn"
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-11 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-[1.02] mt-2"
+                className="w-full h-11 rounded-none bg-[#1E3878] hover:bg-[#1A1A18] text-[#F5F2E8] border-2 border-[#1A1A18] font-bold uppercase transition-all duration-300 mt-2"
               >
                 {isLoading ? (
                   <span className="flex items-center gap-2">
@@ -164,7 +147,7 @@ export function Login() {
               </Button>
             </form>
 
-            <p className="text-center text-xs text-slate-600 mt-6">
+            <p className="text-center text-xs text-[#8A8680] mt-6">
               Any valid email and password will work for demo access.
             </p>
           </CardContent>
