@@ -1,0 +1,154 @@
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Shield, Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/context/AuthContext'
+
+const navLinks = [
+  { label: 'Features', href: '#features' },
+  { label: 'About', href: '#about' },
+  { label: 'Contact', href: '#contact' },
+]
+
+export function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const { isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handler)
+    return () => window.removeEventListener('scroll', handler)
+  }, [])
+
+  return (
+    <motion.header
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? 'bg-slate-950/80 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/30'
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-lg bg-blue-500/30 blur-md group-hover:bg-blue-400/50 transition-all duration-300" />
+              <div className="relative p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
+                <Shield className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            <span className="text-white font-semibold text-lg tracking-tight">
+              Chitragupta <span className="text-blue-400">AI</span>
+            </span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="px-4 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-200"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            {isAuthenticated ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/dashboard')}
+                  className="text-slate-300 hover:text-white hover:bg-white/10"
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={logout}
+                  className="bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 hover:text-red-300"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                id="navbar-login-btn"
+                size="sm"
+                onClick={() => navigate('/login')}
+                className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
+              >
+                Login
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            id="mobile-menu-btn"
+            className="md:hidden text-slate-300 hover:text-white p-2"
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden bg-slate-950/95 backdrop-blur-xl border-t border-white/10"
+          >
+            <div className="px-4 py-4 flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-2.5 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <div className="pt-2 border-t border-white/10">
+                {isAuthenticated ? (
+                  <Button
+                    size="sm"
+                    onClick={() => { navigate('/dashboard'); setMobileOpen(false) }}
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                  >
+                    Dashboard
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() => { navigate('/login'); setMobileOpen(false) }}
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                  >
+                    Login
+                  </Button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
+  )
+}

@@ -1,16 +1,28 @@
 {
-  "extends": "@repo/typescript-config/vite.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
+    "target": "ES2022",
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "types": ["vite/client"],
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
