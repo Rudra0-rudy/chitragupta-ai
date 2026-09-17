@@ -1,0 +1,14 @@
+# dependencies
+node_modules
+
+# build outputs
+.next
+dist
+.turbo
+
+# generated
+*.lock
+pnpm-lock.yaml
+
+# env
+.env*

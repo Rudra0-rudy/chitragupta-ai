@@ -1,0 +1,28 @@
+{
+  "name": "chitragupta-ai",
+  "private": true,
+  "packageManager": "pnpm@12.4.2",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "build:web": "turbo run build --filter=web",
+    "dev:dashboard": "turbo run dev --filter=dashboard",
+    "build:dashboard": "turbo run build --filter=dashboard",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "tw-animate-css": "^1.2.9",
+    "tailwindcss": "^4",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.6.0",
+    "turbo": "^2.9.14",
+    "typescript": "5.9.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
