@@ -8,6 +8,14 @@ import { Home } from '@/pages/Home'
 import { Login } from '@/pages/Login'
 import { Dashboard } from '@/pages/Dashboard'
 
+// Dashboard shell
+import { DashboardLayout, DashboardIndexRedirect } from '@/components/dashboard/DashboardLayout'
+import { Overview } from '@/pages/dashboard/Overview'
+import { Alerts } from '@/pages/dashboard/Alerts'
+import { Works } from '@/pages/dashboard/Works'
+import { Reports } from '@/pages/dashboard/Reports'
+import { Settings } from '@/pages/dashboard/Settings'
+
 function PageTransitionWrapper({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
@@ -27,6 +35,7 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public routes */}
         <Route
           path="/"
           element={
@@ -43,8 +52,10 @@ function AnimatedRoutes() {
             </PageTransitionWrapper>
           }
         />
+
+        {/* Legacy /dashboard (placeholder page, unprotected for backward compat) */}
         <Route
-          path="/dashboard"
+          path="/dashboard-old"
           element={
             <ProtectedRoute>
               <PageTransitionWrapper>
@@ -53,6 +64,24 @@ function AnimatedRoutes() {
             </ProtectedRoute>
           }
         />
+
+        {/* Dashboard shell — protected, nested routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          {/* Index: /dashboard → /dashboard/overview */}
+          <Route index element={<DashboardIndexRedirect />} />
+          <Route path="overview" element={<Overview />} />
+          <Route path="alerts" element={<Alerts />} />
+          <Route path="works" element={<Works />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   )
