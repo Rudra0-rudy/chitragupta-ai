@@ -8,7 +8,7 @@ const stats = [
     suffix: ' Cr',
     label: 'Total Sanctioned',
     subLabel: 'Across all MPLADS constituencies',
-    color: 'from-blue-400 to-indigo-400',
+    color: 'text-[#1E3878]',
   },
   {
     value: 700,
@@ -16,7 +16,7 @@ const stats = [
     suffix: '+',
     label: 'Districts Monitored',
     subLabel: 'Nation-wide coverage',
-    color: 'from-emerald-400 to-teal-400',
+    color: 'text-[#C8302A]',
   },
   {
     value: 24,
@@ -24,7 +24,7 @@ const stats = [
     suffix: '/7',
     label: 'Automated Alerts',
     subLabel: 'Continuous AI surveillance',
-    color: 'from-violet-400 to-purple-400',
+    color: 'text-[#E8C018]',
   },
   {
     value: 98.4,
@@ -32,7 +32,7 @@ const stats = [
     suffix: '%',
     label: 'Detection Accuracy',
     subLabel: 'ML model precision rate',
-    color: 'from-amber-400 to-orange-400',
+    color: 'text-[#1A1A18]',
   },
 ]
 
@@ -68,11 +68,8 @@ function CountUp({
 
 export function Stats() {
   return (
-    <section id="about" className="py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+    <section id="about" className="py-24 bg-[#F5F2E8] relative overflow-hidden">
       {/* Decorative circles */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/[0.03] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-white/[0.04] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full bg-blue-500/5 border border-blue-500/10 pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -82,13 +79,13 @@ export function Stats() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none border-2 border-[#1A1A18] bg-[#E8C018] text-[#1A1A18] text-sm font-bold uppercase tracking-widest mb-6">
             Impact at Scale
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-5 tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-bold text-[#1A1A18] mb-5 tracking-tight">
             Numbers That Matter
           </h2>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto">
+          <p className="text-[#4A4845] text-lg max-w-xl mx-auto">
             Real impact on transparency and accountability in India's public infrastructure
             spending.
           </p>
@@ -105,11 +102,8 @@ export function Stats() {
               whileHover={{ scale: 1.04, y: -6 }}
               className="relative group"
             >
-              <div className="relative p-8 rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-sm overflow-hidden hover:border-white/20 transition-all duration-300">
-                {/* Gradient accent top */}
-                <div className={`absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r ${stat.color} opacity-60 group-hover:opacity-100 transition-opacity`} />
-
-                <div className={`text-4xl lg:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
+              <div className="relative p-8 rounded-none border-2 border-[#1A1A18] bg-white overflow-hidden transition-all duration-300">
+                <div className={`text-4xl lg:text-5xl font-black ${stat.color} mb-2`}>
                   {stat.prefix}
                   <CountUp
                     target={stat.value}
@@ -118,8 +112,8 @@ export function Stats() {
                   />
                   {stat.suffix}
                 </div>
-                <div className="text-white font-semibold text-sm mb-1">{stat.label}</div>
-                <div className="text-slate-500 text-xs">{stat.subLabel}</div>
+                <div className="text-[#1A1A18] font-semibold text-sm mb-1">{stat.label}</div>
+                <div className="text-[#4A4845] text-xs">{stat.subLabel}</div>
               </div>
             </motion.div>
           ))}
