@@ -16,6 +16,8 @@ import {
   PieChart,
   Pie,
   Cell,
+  BarChart,
+  Bar,
 } from 'recharts'
 
 // ---------------------------------------------------------------------------
@@ -74,6 +76,38 @@ function buildTrendData(rows: AlertRow[]): TrendPoint[] {
 
 
 // ---------------------------------------------------------------------------
+// State Risk helper — computes average risk per state
+// ---------------------------------------------------------------------------
+
+interface StateRisk {
+  state: string
+  avgRisk: number
+  works: number
+}
+
+function buildStateRiskData(rows: AlertRow[]): StateRisk[] {
+  const buckets = new Map<string, { sum: number; count: number }>()
+
+  for (const row of rows) {
+    const score = Number(row.risk_score) || 0
+    const bucket = buckets.get(row.state) ?? { sum: 0, count: 0 }
+    bucket.sum += score
+    bucket.count += 1
+    buckets.set(row.state, bucket)
+  }
+
+  return [...buckets.entries()]
+    .map(([state, { sum, count }]) => ({
+      state,
+      avgRisk: count > 0 ? sum / count : 0,
+      works: count,
+    }))
+    .sort((a, b) => b.avgRisk - a.avgRisk)
+    .slice(0, 5)
+}
+
+
+// ---------------------------------------------------------------------------
 // F3 — Risk Distribution demo data
 // Keys align with future RiskDistributionResponse shape.
 // ---------------------------------------------------------------------------
@@ -92,7 +126,7 @@ const riskData: RiskSegment[] = [
 export function Overview() {
   const { activeRole } = useRoleStore()
 
-  const { kpiCards, trendData } = useMemo(() => {
+  const { kpiCards, trendData, stateData } = useMemo(() => {
     const scopedRows = filterByRole(ALERTS, activeRole)
 
     const totalSanctioned = scopedRows.reduce(
@@ -114,6 +148,7 @@ export function Overview() {
         { label: 'Avg Risk Score',   value: avgRiskScore.toFixed(1),                sub: 'Portfolio average' },
       ],
       trendData: buildTrendData(scopedRows),
+      stateData: buildStateRiskData(scopedRows),
     }
   }, [activeRole])
   return (
@@ -244,6 +279,59 @@ export function Overview() {
               )}
             />
           </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* F4 — Top 5 Risk States horizontal bar chart */}
+      <div className="border-2 border-[#1A1A18] bg-[#FFFFFF] p-4 sm:p-6 mt-4">
+        <p className="text-sm font-black uppercase tracking-wider text-[#1A1A18] mb-0.5">
+          Top 5 Risk States
+        </p>
+        <p className="text-xs text-[#8A8680] mb-4">
+          States with highest average risk score in current scope
+        </p>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart
+            data={stateData}
+            layout="vertical"
+            margin={{ top: 4, right: 48, left: 8, bottom: 4 }}
+          >
+            <CartesianGrid stroke="#8A8680" strokeDasharray="4 4" horizontal={false} />
+            <XAxis
+              type="number"
+              domain={[0, 100]}
+              tickCount={6}
+              tick={{ fontSize: 11, fill: '#4A4845', fontFamily: 'Inter Variable, sans-serif' }}
+              axisLine={{ stroke: '#1A1A18' }}
+              tickLine={false}
+            />
+            <YAxis
+              type="category"
+              dataKey="state"
+              width={110}
+              tick={{ fontSize: 11, fill: '#4A4845', fontFamily: 'Inter Variable, sans-serif' }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              contentStyle={{
+                border: '2px solid #1A1A18',
+                borderRadius: 0,
+                background: '#FFFFFF',
+                fontSize: 12,
+                fontFamily: 'Inter Variable, sans-serif',
+              }}
+              cursor={{ fill: '#F5F2E8' }}
+              formatter={(value, name, props) => {
+                if (name === 'avgRisk') {
+                  const works = (props as { payload?: { works?: number } })?.payload?.works ?? 0
+                  return [`${Number(value).toFixed(1)} (${works} works)`, 'Avg Risk Score']
+                }
+                return [String(value), String(name)]
+              }}
+            />
+            <Bar dataKey="avgRisk" name="avgRisk" fill="#1E3878" radius={0} />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
