@@ -91,7 +91,7 @@ export function Stats() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -100,10 +100,10 @@ export function Stats() {
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.04, y: -6 }}
-              className="relative group"
+              className="relative group h-full"
             >
-              <div className="relative p-8 rounded-none border-2 border-[#1A1A18] bg-white overflow-hidden transition-all duration-300">
-                <div className={`text-4xl lg:text-5xl font-black ${stat.color} mb-2`}>
+              <div className="relative p-8 rounded-none border-2 border-[#1A1A18] bg-white overflow-hidden transition-all duration-300 h-full flex flex-col">
+                <div className={`text-4xl lg:text-5xl font-black ${stat.color} mb-2 min-h-[3.5rem] lg:min-h-[4rem]`}>
                   {stat.prefix}
                   <CountUp
                     target={stat.value}
@@ -112,7 +112,7 @@ export function Stats() {
                   />
                   {stat.suffix}
                 </div>
-                <div className="text-[#1A1A18] font-semibold text-sm mb-1">{stat.label}</div>
+                <div className="text-[#1A1A18] font-semibold text-sm mb-1 mt-auto">{stat.label}</div>
                 <div className="text-[#4A4845] text-xs">{stat.subLabel}</div>
               </div>
             </motion.div>
