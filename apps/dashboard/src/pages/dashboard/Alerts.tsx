@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { AlertTriangle, ChevronUp, ChevronDown, X, CheckCircle2, ArrowUpRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ALERTS, TOTAL_COUNT } from '@/data/mockAlerts'
@@ -358,6 +358,15 @@ export function Alerts() {
   const [severityFilter, setSeverityFilter] = useState<Severity | 'ALL'>('High')
   const [search, setSearch] = useState('')
 
+  // Pagination state
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
+
+  // Reset page on filter/search/size change
+  useEffect(() => {
+    setPage(1)
+  }, [severityFilter, search, pageSize])
+
   // Sort state — default: risk_score descending
   const [sortKey, setSortKey] = useState<SortKey>('risk_score')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
@@ -423,6 +432,12 @@ export function Alerts() {
     return rows
   }, [severityFilter, search, sortKey, sortDir])
 
+  // Pagination slice
+  const totalFiltered = filteredRows.length
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize))
+  const startIdx = (page - 1) * pageSize
+  const pagedRows = filteredRows.slice(startIdx, startIdx + pageSize)
+
   // KPI strip (live from filteredRows — represents current view)
   const highCount   = useMemo(() => ALERTS.filter((r) => r.risk_level === 'High').length,   [])
   const mediumCount = useMemo(() => ALERTS.filter((r) => r.risk_level === 'Medium').length, [])
@@ -485,10 +500,24 @@ export function Alerts() {
           className="flex-1 min-w-[220px] px-3 py-1.5 text-xs border-2 border-[#1A1A18] bg-[#FFFFFF] text-[#1A1A18] placeholder:text-[#8A8680] outline-none focus:bg-[#F5F2E8] transition-colors font-medium uppercase tracking-wide"
         />
 
-        {/* Row counter */}
-        <span className="ml-auto text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
-          Showing {filteredRows.length.toLocaleString()} of {TOTAL_COUNT.toLocaleString()} records
-        </span>
+        <div className="ml-auto flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xs uppercase tracking-wider text-[#8A8680]">ROWS:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="bg-white border-2 border-[#1A1A18] rounded-none h-8 text-xs font-medium uppercase tracking-wider px-2 outline-none cursor-pointer"
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+          {/* Row counter */}
+          <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
+            SHOWING {totalFiltered.toLocaleString()} OF {TOTAL_COUNT.toLocaleString()} RECORDS
+          </span>
+        </div>
       </div>
 
       {/* Table */}
@@ -515,14 +544,14 @@ export function Alerts() {
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-[#1A1A18]">
-            {filteredRows.length === 0 ? (
+            {pagedRows.length === 0 ? (
               <tr>
                 <td colSpan={COLS.length} className="px-4 py-12 text-center text-xs uppercase tracking-wider text-[#8A8680]">
                   No records match the current filter
                 </td>
               </tr>
             ) : (
-              filteredRows.map((row) => {
+              pagedRows.map((row) => {
                 const isDismissed = dismissed.has(row.work_id)
                 const isEscalated = escalated.has(row.work_id)
                 return (
@@ -590,6 +619,32 @@ export function Alerts() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Footer */}
+      <div className="mt-4 flex items-center justify-between">
+        <div className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">
+          SHOWING {totalFiltered === 0 ? 0 : startIdx + 1}–{Math.min(startIdx + pageSize, totalFiltered)} OF {totalFiltered} RECORDS
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="border-2 border-[#1A1A18] bg-white rounded-none h-8 px-3 text-xs font-medium uppercase tracking-wider hover:bg-[#E8C018] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            &larr; PREV
+          </button>
+          <span className="text-xs font-medium uppercase tracking-wider text-[#1A1A18]">
+            PAGE {page} OF {totalPages}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="border-2 border-[#1A1A18] bg-white rounded-none h-8 px-3 text-xs font-medium uppercase tracking-wider hover:bg-[#E8C018] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            NEXT &rarr;
+          </button>
+        </div>
       </div>
 
       {/* Detail Sheet */}
