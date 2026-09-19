@@ -3,6 +3,7 @@ import { Sidebar } from '@/components/dashboard/Sidebar'
 import { TopBar } from '@/components/dashboard/TopBar'
 import { useRoleStore } from '@/stores/useRoleStore'
 import { getRoleScope } from '@/lib/roleFilter'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 function RoleContextBanner() {
   const { activeRole } = useRoleStore()
@@ -33,7 +34,9 @@ export function DashboardLayout() {
         {/* Page content */}
         <main className="flex-1 overflow-y-auto bg-[#F5F2E8]">
           <RoleContextBanner />
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
     </div>
