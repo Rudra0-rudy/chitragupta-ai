@@ -117,16 +117,31 @@ interface RiskSegment {
   color: string
 }
 
-const riskData: RiskSegment[] = [
-  { label: 'Low Risk',    value: 58, color: '#1E3878' },
-  { label: 'Medium Risk', value: 29, color: '#E8C018' },
-  { label: 'High Risk',   value: 13, color: '#C8302A' },
-]
+function buildRiskData(rows: AlertRow[]): RiskSegment[] {
+  const total = rows.length
+  if (total === 0) {
+    return [
+      { label: 'Low Risk',    value: 0, color: '#1E3878' },
+      { label: 'Medium Risk', value: 0, color: '#E8C018' },
+      { label: 'High Risk',   value: 0, color: '#C8302A' },
+    ]
+  }
+
+  const low    = rows.filter((r) => r.risk_level === 'Low').length
+  const medium = rows.filter((r) => r.risk_level === 'Medium').length
+  const high   = rows.filter((r) => r.risk_level === 'High').length
+
+  return [
+    { label: 'Low Risk',    value: Math.round((low    / total) * 100), color: '#1E3878' },
+    { label: 'Medium Risk', value: Math.round((medium / total) * 100), color: '#E8C018' },
+    { label: 'High Risk',   value: Math.round((high   / total) * 100), color: '#C8302A' },
+  ]
+}
 
 export function Overview() {
   const { activeRole } = useRoleStore()
 
-  const { kpiCards, trendData, stateData } = useMemo(() => {
+  const { kpiCards, trendData, stateData, riskData } = useMemo(() => {
     const scopedRows = filterByRole(ALERTS, activeRole)
 
     const totalSanctioned = scopedRows.reduce(
@@ -149,6 +164,7 @@ export function Overview() {
       ],
       trendData: buildTrendData(scopedRows),
       stateData: buildStateRiskData(scopedRows),
+      riskData: buildRiskData(scopedRows),
     }
   }, [activeRole])
   return (
