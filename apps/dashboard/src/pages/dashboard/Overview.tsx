@@ -8,6 +8,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts'
 
 // ---------------------------------------------------------------------------
@@ -61,6 +64,22 @@ const trendData: TrendPoint[] = [
   { month: 'Jan', sanctioned: 590, expenditure: 450 },
   { month: 'Feb', sanctioned: 620, expenditure: 480 },
   { month: 'Mar', sanctioned: 650, expenditure: 510 },
+]
+
+// ---------------------------------------------------------------------------
+// F3 — Risk Distribution demo data
+// Keys align with future RiskDistributionResponse shape.
+// ---------------------------------------------------------------------------
+interface RiskSegment {
+  label: string
+  value: number
+  color: string
+}
+
+const riskData: RiskSegment[] = [
+  { label: 'Low Risk',    value: 58, color: '#1E3878' },
+  { label: 'Medium Risk', value: 29, color: '#E8C018' },
+  { label: 'High Risk',   value: 13, color: '#C8302A' },
 ]
 
 export function Overview() {
@@ -145,6 +164,53 @@ export function Overview() {
               activeDot={{ r: 4, stroke: '#E8C018', strokeWidth: 2, fill: '#FFFFFF' }}
             />
           </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* F3 — Risk Distribution donut chart */}
+      <div className="border-2 border-[#1A1A18] bg-[#FFFFFF] p-6 mt-4">
+        <p className="text-sm font-black uppercase tracking-wider text-[#1A1A18] mb-0.5">
+          Risk Distribution
+        </p>
+        <p className="text-xs text-[#8A8680] mb-4">Current portfolio risk breakdown</p>
+        <ResponsiveContainer width="100%" height={280}>
+          <PieChart>
+            <Pie
+              data={riskData}
+              dataKey="value"
+              nameKey="label"
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={110}
+              strokeWidth={2}
+              stroke="#1A1A18"
+              label={({ label, percent }: { label: string; percent: number }) =>
+                `${label} ${(percent * 100).toFixed(0)}%`
+              }
+              labelLine={{ stroke: '#4A4845', strokeWidth: 1 }}
+            >
+              {riskData.map((seg) => (
+                <Cell key={seg.label} fill={seg.color} />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                border: '2px solid #1A1A18',
+                borderRadius: 0,
+                background: '#FFFFFF',
+                fontSize: 12,
+                fontFamily: 'Inter Variable, sans-serif',
+              }}
+              formatter={(value: number, name: string) => [`${value}%`, name]}
+            />
+            <Legend
+              wrapperStyle={{ fontSize: 12, fontFamily: 'Inter Variable, sans-serif', paddingTop: 12 }}
+              formatter={(value: string) => (
+                <span style={{ color: '#1A1A18' }}>{value}</span>
+              )}
+            />
+          </PieChart>
         </ResponsiveContainer>
       </div>
     </div>
