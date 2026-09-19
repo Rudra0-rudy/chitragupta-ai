@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "shadcn": {
     "apps": {
-      "web": "shared",
       "dashboard": "shared"
     }
   }
