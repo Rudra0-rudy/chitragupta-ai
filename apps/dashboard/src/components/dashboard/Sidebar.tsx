@@ -36,7 +36,7 @@ export function Sidebar() {
       className={`
         flex flex-col border-r-2 border-[#1A1A18] bg-[#F5F2E8]
         transition-[width] duration-200
-        ${sidebarCollapsed ? 'w-14' : 'w-56'}
+        ${sidebarCollapsed ? 'w-14' : 'w-14 md:w-56'}
         shrink-0 h-full
       `}
     >
@@ -78,7 +78,7 @@ export function Sidebar() {
           >
             <Icon className="w-4 h-4 shrink-0" strokeWidth={2} />
             {!sidebarCollapsed && (
-              <span className="text-sm font-medium uppercase tracking-wider truncate">
+              <span className="text-sm font-medium uppercase tracking-wider truncate hidden md:inline">
                 {label}
               </span>
             )}
@@ -102,7 +102,7 @@ export function Sidebar() {
         >
           <LogOut className="w-4 h-4 shrink-0" strokeWidth={2} />
           {!sidebarCollapsed && (
-            <span className="text-sm font-medium uppercase tracking-wider">Logout</span>
+            <span className="text-sm font-medium uppercase tracking-wider hidden md:inline">Logout</span>
           )}
         </button>
 
@@ -111,7 +111,7 @@ export function Sidebar() {
           id="sidebar-collapse-btn"
           onClick={toggleSidebar}
           className={`
-            w-full flex items-center gap-3 px-4 h-11 border-t-2 border-[#1A1A18]
+            hidden md:flex w-full items-center gap-3 px-4 h-11 border-t-2 border-[#1A1A18]
             text-[#8A8680] hover:bg-[#E8C018] hover:text-[#1A1A18]
             transition-colors
             ${sidebarCollapsed ? 'justify-center px-0' : ''}
@@ -124,7 +124,7 @@ export function Sidebar() {
             <PanelLeftClose className="w-4 h-4 shrink-0" strokeWidth={2} />
           )}
           {!sidebarCollapsed && (
-            <span className="text-sm font-medium uppercase tracking-wider">Collapse</span>
+            <span className="text-sm font-medium uppercase tracking-wider hidden md:inline">Collapse</span>
           )}
         </button>
       </div>

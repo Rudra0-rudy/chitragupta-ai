@@ -21,36 +21,38 @@ function ThresholdRow({
   onChange: (n: number) => void
 }) {
   return (
-    <div className="px-5 py-4">
-      <div className="flex items-start justify-between">
-        <div>
-          <span className="text-sm font-medium text-[#1A1A18] block mb-1">{label}</span>
-          <p className="text-sm text-[#4A4845] mb-2">{description}</p>
+    <div className="px-4 sm:px-5 py-4">
+      <div>
+        <span className="text-sm font-medium text-[#1A1A18] block mb-1">{label}</span>
+        <p className="text-sm text-[#4A4845] mb-3">{description}</p>
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex items-center shrink-0">
+          <input
+            type="number"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            onChange={(e) => onChange(Number(e.target.value))}
+            className="w-24 h-9 px-2 text-right text-sm font-medium text-[#1A1A18] bg-white border-2 border-[#1A1A18] rounded-none focus:outline-none focus:border-[#1E3878]"
+          />
+          <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] ml-2 w-12">
+            {suffix}
+          </span>
         </div>
-      </div>
-      <div className="flex items-center mt-2">
-        <input
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="w-24 h-9 px-2 text-right text-sm font-medium text-[#1A1A18] bg-white border-2 border-[#1A1A18] rounded-none focus:outline-none focus:border-[#1E3878]"
-        />
-        <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] ml-2">
-          {suffix}
-        </span>
-      </div>
-      <div className="relative h-2 bg-[#F5F2E8] border border-[#1A1A18] mt-2">
-        <div
-          className="h-full bg-[#1E3878]"
-          style={{ width: `${((value - min) / (max - min)) * 100}%` }}
-        />
-      </div>
-      <div className="flex justify-between text-xs text-[#8A8680] mt-1">
-        <span>{min}</span>
-        <span>{max}</span>
+        <div className="flex-1 min-w-0 w-full">
+          <div className="relative h-2 bg-[#F5F2E8] border border-[#1A1A18]">
+            <div
+              className="h-full bg-[#1E3878]"
+              style={{ width: `${((value - min) / (max - min)) * 100}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-[#8A8680] mt-1">
+            <span>{min}</span>
+            <span>{max}</span>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -68,7 +70,7 @@ export function Settings() {
   } = useSettingsStore()
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex items-center gap-3 mb-8 border-b-2 border-[#1A1A18] pb-4">
         <SettingsIcon className="w-5 h-5 text-[#1A1A18]" strokeWidth={2} />
         <h1 className="text-xl font-black uppercase tracking-tight text-[#1A1A18]">Settings</h1>
@@ -124,19 +126,19 @@ export function Settings() {
             </h2>
           </div>
           <div className="divide-y-0">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#8A8680] last:border-b-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-5 py-4 border-b border-[#8A8680] last:border-b-0">
               <span className="text-sm text-[#4A4845]">Isolation Forest contamination</span>
               <span className="text-sm font-bold text-[#1A1A18] font-mono">0.05</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#8A8680] last:border-b-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-5 py-4 border-b border-[#8A8680] last:border-b-0">
               <span className="text-sm text-[#4A4845]">LOF n_neighbors</span>
               <span className="text-sm font-bold text-[#1A1A18] font-mono">20</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#8A8680] last:border-b-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-5 py-4 border-b border-[#8A8680] last:border-b-0">
               <span className="text-sm text-[#4A4845]">Peer group minimum size</span>
               <span className="text-sm font-bold text-[#1A1A18] font-mono">10</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#8A8680] last:border-b-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-5 py-4 border-b border-[#8A8680] last:border-b-0">
               <span className="text-sm text-[#4A4845]">Risk tiers</span>
               <span className="text-sm font-bold text-[#1A1A18] font-mono">Low / Medium / High</span>
             </div>

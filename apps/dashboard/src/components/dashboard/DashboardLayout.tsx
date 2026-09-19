@@ -9,13 +9,13 @@ function RoleContextBanner() {
   const scope = getRoleScope(activeRole)
 
   return (
-    <div className="border-b-2 border-[#1A1A18] bg-[#F5F2E8] px-8 py-2 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">Viewing as:</span>
-        <span className="text-xs font-black uppercase tracking-wider text-[#1A1A18] bg-[#E8C018] px-2 py-0.5">{scope.label}</span>
-        <span className="text-xs font-medium uppercase tracking-wider text-[#4A4845]">{scope.description}</span>
+    <div className="border-b-2 border-[#1A1A18] bg-[#F5F2E8] px-4 sm:px-8 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] shrink-0">Viewing as:</span>
+        <span className="text-xs font-black uppercase tracking-wider text-[#1A1A18] bg-[#E8C018] px-2 py-0.5 shrink-0">{scope.label}</span>
+        <span className="text-xs font-medium uppercase tracking-wider text-[#4A4845] truncate">{scope.description}</span>
       </div>
-      <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">Role-scoped view</span>
+      <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] hidden sm:inline shrink-0">Role-scoped view</span>
     </div>
   )
 }
