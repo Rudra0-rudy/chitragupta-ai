@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion, type Variants } from 'framer-motion'
-import { ArrowRight, Play, TrendingUp, AlertTriangle, CheckCircle, Activity } from 'lucide-react'
+import { ArrowRight, Play, AlertTriangle, CheckCircle, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const floatingStats = [

@@ -118,9 +118,9 @@ export function Overview() {
                 fontSize: 12,
                 fontFamily: 'Inter Variable, sans-serif',
               }}
-              formatter={(value: number, name: string) => [
+              formatter={(value, name) => [
                 `₹${value} Cr`,
-                name.charAt(0).toUpperCase() + name.slice(1),
+                String(name).charAt(0).toUpperCase() + String(name).slice(1),
               ]}
             />
             <Legend
@@ -150,3 +150,4 @@ export function Overview() {
     </div>
   )
 }
+
