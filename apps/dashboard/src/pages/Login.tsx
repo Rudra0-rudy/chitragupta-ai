@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { useAuth } from '@/context/AuthContext'
 
+const DEMO_EMAIL = 'demo@mplads.gov.in'
+const DEMO_PASSWORD = 'demo1234'
+
 export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,6 +36,21 @@ export function Login() {
       navigate(from, { replace: true })
     } catch {
       setError('Authentication failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleDemoLogin = async () => {
+    setEmail(DEMO_EMAIL)
+    setPassword(DEMO_PASSWORD)
+    setError('')
+    setIsLoading(true)
+    try {
+      await login(DEMO_EMAIL, DEMO_PASSWORD)
+      navigate(from, { replace: true })
+    } catch {
+      setError('Demo authentication failed. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -145,10 +163,28 @@ export function Login() {
                   'Sign In'
                 )}
               </Button>
+
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-[#8A8680]" />
+                <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">or</span>
+                <div className="flex-1 h-px bg-[#8A8680]" />
+              </div>
+
+              <Button
+                id="login-demo-btn"
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={isLoading}
+                className="w-full h-11 rounded-none bg-white hover:bg-[#E8C018] text-[#1A1A18] border-2 border-[#1A1A18] font-bold uppercase transition-all duration-300"
+              >
+                Use Demo Credentials
+              </Button>
             </form>
 
-            <p className="text-center text-xs text-[#8A8680] mt-6">
-              Any valid email and password will work for demo access.
+            <p className="text-center text-xs text-[#8A8680] mt-6 leading-relaxed">
+              Demo access is open — any email and password will sign you in.
+              <br />
+              Or use the button above to skip typing.
             </p>
           </CardContent>
         </Card>
