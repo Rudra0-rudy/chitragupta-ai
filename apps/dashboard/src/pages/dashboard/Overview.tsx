@@ -1,5 +1,33 @@
 import { LayoutDashboard } from 'lucide-react'
 
+// ---------------------------------------------------------------------------
+// F1 — KPI demo data
+// Fields are intentionally named after the planned SummaryResponse contract
+// (total_sanctioned, works_completed, high_risk_count, avg_risk_score) so that
+// the F13 / TanStack Query integration can replace this object without touching
+// the card JSX below.
+// ---------------------------------------------------------------------------
+interface OverviewStats {
+  total_sanctioned: string
+  works_completed: string
+  high_risk_count: string
+  avg_risk_score: string
+}
+
+const overviewStats: OverviewStats = {
+  total_sanctioned: '₹4,466 Cr',
+  works_completed: '12,840',
+  high_risk_count: '318',
+  avg_risk_score: '6.4 / 10',
+}
+
+const kpiCards = [
+  { label: 'Total Sanctioned', value: overviewStats.total_sanctioned, sub: 'FY 2024–25' },
+  { label: 'Works Completed',  value: overviewStats.works_completed,  sub: 'Across all MPs' },
+  { label: 'High-Risk Cases',  value: overviewStats.high_risk_count,  sub: 'Flagged for review' },
+  { label: 'Avg Risk Score',   value: overviewStats.avg_risk_score,   sub: 'Portfolio average' },
+] as const
+
 export function Overview() {
   return (
     <div className="p-8">
@@ -9,12 +37,7 @@ export function Overview() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Sanctioned', value: '₹4,466 Cr', sub: 'FY 2024–25' },
-          { label: 'Works Completed', value: '12,840', sub: 'Across all MPs' },
-          { label: 'Anomalies Flagged', value: '1,284', sub: 'Pending review' },
-          { label: 'Compliance Rate', value: '94.2%', sub: 'This quarter' },
-        ].map((card) => (
+        {kpiCards.map((card) => (
           <div
             key={card.label}
             className="border-2 border-[#1A1A18] bg-[#FFFFFF] p-5"
