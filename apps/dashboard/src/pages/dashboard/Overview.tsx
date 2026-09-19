@@ -1,6 +1,9 @@
+import { useMemo } from 'react'
 import { LayoutDashboard } from 'lucide-react'
 import { ALERTS } from '@/data/mockAlerts'
 import type { AlertRow } from '@/data/mockAlerts'
+import { useRoleStore } from '@/stores/useRoleStore'
+import { filterByRole } from '@/lib/roleFilter'
 import {
   ResponsiveContainer,
   LineChart,
@@ -13,7 +16,7 @@ import {
 } from 'recharts'
 
 // ---------------------------------------------------------------------------
-// KPI aggregates — computed once at module level from the real CSV dataset
+// Helpers (pure, module-level — no dependency on role)
 // ---------------------------------------------------------------------------
 
 function formatCrore(rupees: number): string {
@@ -22,29 +25,8 @@ function formatCrore(rupees: number): string {
   return `₹${crore.toFixed(1)} Cr`
 }
 
-const totalSanctioned = ALERTS.reduce(
-  (sum, r) => sum + (Number(r.cost_estimate) || 0),
-  0,
-)
-
-const worksCompleted = ALERTS.filter((r) => r.status === 'Completed').length
-
-const highRiskCount = ALERTS.filter((r) => r.risk_level === 'High').length
-
-const avgRiskScore =
-  ALERTS.length > 0
-    ? ALERTS.reduce((sum, r) => sum + (Number(r.risk_score) || 0), 0) / ALERTS.length
-    : 0
-
-const kpiCards = [
-  { label: 'Total Sanctioned', value: formatCrore(totalSanctioned),               sub: 'FY 2024–25' },
-  { label: 'Works Completed',  value: worksCompleted.toLocaleString('en-IN'),      sub: 'Across all MPs' },
-  { label: 'High-Risk Cases',  value: highRiskCount.toLocaleString('en-IN'),       sub: 'Flagged for review' },
-  { label: 'Avg Risk Score',   value: avgRiskScore.toFixed(1),                     sub: 'Portfolio average' },
-] as const
-
 // ---------------------------------------------------------------------------
-// Trend data — monthly Sanctioned vs Expenditure from the CSV
+// Trend helper — pure function, computes monthly buckets from any row slice
 // ---------------------------------------------------------------------------
 
 interface TrendPoint {
@@ -87,9 +69,34 @@ function buildTrendData(rows: AlertRow[]): TrendPoint[] {
   })
 }
 
-const trendData: TrendPoint[] = buildTrendData(ALERTS)
 
 export function Overview() {
+  const { activeRole } = useRoleStore()
+
+  const { kpiCards, trendData } = useMemo(() => {
+    const scopedRows = filterByRole(ALERTS, activeRole)
+
+    const totalSanctioned = scopedRows.reduce(
+      (sum, r) => sum + (Number(r.cost_estimate) || 0),
+      0,
+    )
+    const worksCompleted = scopedRows.filter((r) => r.status === 'Completed').length
+    const highRiskCount  = scopedRows.filter((r) => r.risk_level === 'High').length
+    const avgRiskScore   =
+      scopedRows.length > 0
+        ? scopedRows.reduce((sum, r) => sum + (Number(r.risk_score) || 0), 0) / scopedRows.length
+        : 0
+
+    return {
+      kpiCards: [
+        { label: 'Total Sanctioned', value: formatCrore(totalSanctioned),          sub: 'FY 2024–25' },
+        { label: 'Works Completed',  value: worksCompleted.toLocaleString('en-IN'), sub: 'Across all MPs' },
+        { label: 'High-Risk Cases',  value: highRiskCount.toLocaleString('en-IN'),  sub: 'Flagged for review' },
+        { label: 'Avg Risk Score',   value: avgRiskScore.toFixed(1),                sub: 'Portfolio average' },
+      ],
+      trendData: buildTrendData(scopedRows),
+    }
+  }, [activeRole])
   return (
     <div className="p-8">
       <div className="flex items-center gap-3 mb-8 border-b-2 border-[#1A1A18] pb-4">
