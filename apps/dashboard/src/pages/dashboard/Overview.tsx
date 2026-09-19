@@ -1,4 +1,6 @@
 import { LayoutDashboard } from 'lucide-react'
+import { ALERTS } from '@/data/mockAlerts'
+import type { AlertRow } from '@/data/mockAlerts'
 import {
   ResponsiveContainer,
   LineChart,
@@ -11,57 +13,81 @@ import {
 } from 'recharts'
 
 // ---------------------------------------------------------------------------
-// F1 — KPI demo data
-// Fields are intentionally named after the planned SummaryResponse contract
-// (total_sanctioned, works_completed, high_risk_count, avg_risk_score) so that
-// the F13 / TanStack Query integration can replace this object without touching
-// the card JSX below.
+// KPI aggregates — computed once at module level from the real CSV dataset
 // ---------------------------------------------------------------------------
-interface OverviewStats {
-  total_sanctioned: string
-  works_completed: string
-  high_risk_count: string
-  avg_risk_score: string
+
+function formatCrore(rupees: number): string {
+  const crore = rupees / 1e7
+  if (crore >= 1000) return `₹${Math.round(crore).toLocaleString('en-IN')} Cr`
+  return `₹${crore.toFixed(1)} Cr`
 }
 
-const overviewStats: OverviewStats = {
-  total_sanctioned: '₹4,466 Cr',
-  works_completed: '12,840',
-  high_risk_count: '318',
-  avg_risk_score: '6.4 / 10',
-}
+const totalSanctioned = ALERTS.reduce(
+  (sum, r) => sum + (Number(r.cost_estimate) || 0),
+  0,
+)
+
+const worksCompleted = ALERTS.filter((r) => r.status === 'Completed').length
+
+const highRiskCount = ALERTS.filter((r) => r.risk_level === 'High').length
+
+const avgRiskScore =
+  ALERTS.length > 0
+    ? ALERTS.reduce((sum, r) => sum + (Number(r.risk_score) || 0), 0) / ALERTS.length
+    : 0
 
 const kpiCards = [
-  { label: 'Total Sanctioned', value: overviewStats.total_sanctioned, sub: 'FY 2024–25' },
-  { label: 'Works Completed',  value: overviewStats.works_completed,  sub: 'Across all MPs' },
-  { label: 'High-Risk Cases',  value: overviewStats.high_risk_count,  sub: 'Flagged for review' },
-  { label: 'Avg Risk Score',   value: overviewStats.avg_risk_score,   sub: 'Portfolio average' },
+  { label: 'Total Sanctioned', value: formatCrore(totalSanctioned),               sub: 'FY 2024–25' },
+  { label: 'Works Completed',  value: worksCompleted.toLocaleString('en-IN'),      sub: 'Across all MPs' },
+  { label: 'High-Risk Cases',  value: highRiskCount.toLocaleString('en-IN'),       sub: 'Flagged for review' },
+  { label: 'Avg Risk Score',   value: avgRiskScore.toFixed(1),                     sub: 'Portfolio average' },
 ] as const
 
 // ---------------------------------------------------------------------------
-// F2 — Expenditure vs Sanction trend demo data (FY 2024–25)
-// Keyed as { month, sanctioned, expenditure } to align with future API shape.
+// Trend data — monthly Sanctioned vs Expenditure from the CSV
 // ---------------------------------------------------------------------------
+
 interface TrendPoint {
   month: string
   sanctioned: number
   expenditure: number
 }
 
-const trendData: TrendPoint[] = [
-  { month: 'Apr', sanctioned: 340, expenditure: 210 },
-  { month: 'May', sanctioned: 360, expenditure: 240 },
-  { month: 'Jun', sanctioned: 390, expenditure: 270 },
-  { month: 'Jul', sanctioned: 420, expenditure: 300 },
-  { month: 'Aug', sanctioned: 450, expenditure: 330 },
-  { month: 'Sep', sanctioned: 480, expenditure: 355 },
-  { month: 'Oct', sanctioned: 510, expenditure: 380 },
-  { month: 'Nov', sanctioned: 530, expenditure: 400 },
-  { month: 'Dec', sanctioned: 560, expenditure: 420 },
-  { month: 'Jan', sanctioned: 590, expenditure: 450 },
-  { month: 'Feb', sanctioned: 620, expenditure: 480 },
-  { month: 'Mar', sanctioned: 650, expenditure: 510 },
-]
+function buildTrendData(rows: AlertRow[]): TrendPoint[] {
+  const buckets = new Map<string, { sanctioned: number; expenditure: number }>()
+
+  for (const row of rows) {
+    const date = row.sanction_date
+    if (!date || date.length < 7) continue
+    const key = date.slice(0, 7) // "YYYY-MM"
+
+    const cost  = Number(row.cost_estimate)        || 0
+    const paid  = Number(row.payment_released_pct) || 0
+    const spent = cost * paid // payment_released_pct is decimal 0-1
+
+    const bucket = buckets.get(key) ?? { sanctioned: 0, expenditure: 0 }
+    bucket.sanctioned  += cost
+    bucket.expenditure += spent
+    buckets.set(key, bucket)
+  }
+
+  const sorted  = [...buckets.entries()].sort(([a], [b]) => a.localeCompare(b))
+  const last12  = sorted.slice(-12)
+
+  return last12.map(([key, v]) => {
+    const [year, month] = key.split('-')
+    const monthLabel = new Date(Number(year), Number(month) - 1, 1).toLocaleString('en-IN', {
+      month: 'short',
+    })
+    return {
+      month:       monthLabel,
+      sanctioned:  Math.round(v.sanctioned  / 1e7),
+      expenditure: Math.round(v.expenditure / 1e7),
+    }
+  })
+}
+
+const trendData: TrendPoint[] = buildTrendData(ALERTS)
 
 export function Overview() {
   return (
