@@ -20,4 +20,6 @@ coverage
 
 # editor
 .vscode/extensions.json
-.vscode*.tsbuildinfo
+
+.vscode
+*.tsbuildinfo
