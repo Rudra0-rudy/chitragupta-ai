@@ -63,34 +63,6 @@ const trendData: TrendPoint[] = [
   { month: 'Mar', sanctioned: 650, expenditure: 510 },
 ]
 
-// ---------------------------------------------------------------------------
-// F1 — KPI demo data
-// Fields are intentionally named after the planned SummaryResponse contract
-// (total_sanctioned, works_completed, high_risk_count, avg_risk_score) so that
-// the F13 / TanStack Query integration can replace this object without touching
-// the card JSX below.
-// ---------------------------------------------------------------------------
-interface OverviewStats {
-  total_sanctioned: string
-  works_completed: string
-  high_risk_count: string
-  avg_risk_score: string
-}
-
-const overviewStats: OverviewStats = {
-  total_sanctioned: '₹4,466 Cr',
-  works_completed: '12,840',
-  high_risk_count: '318',
-  avg_risk_score: '6.4 / 10',
-}
-
-const kpiCards = [
-  { label: 'Total Sanctioned', value: overviewStats.total_sanctioned, sub: 'FY 2024–25' },
-  { label: 'Works Completed',  value: overviewStats.works_completed,  sub: 'Across all MPs' },
-  { label: 'High-Risk Cases',  value: overviewStats.high_risk_count,  sub: 'Flagged for review' },
-  { label: 'Avg Risk Score',   value: overviewStats.avg_risk_score,   sub: 'Portfolio average' },
-] as const
-
 export function Overview() {
   return (
     <div className="p-8">
