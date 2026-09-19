@@ -157,12 +157,12 @@ export function Works() {
   const pagedRows = filteredRows.slice(startIdx, startIdx + pageSize)
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Page header */}
-      <div className="flex items-center gap-3 mb-6 border-b-2 border-[#1A1A18] pb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-6 border-b-2 border-[#1A1A18] pb-4">
         <HardHat className="w-5 h-5 text-[#1E3878]" strokeWidth={2} />
         <h1 className="text-xl font-black uppercase tracking-tight text-[#1A1A18]">Works</h1>
-        <span className="ml-auto text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
+        <span className="w-full sm:w-auto sm:ml-auto text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
           SHOWING {totalFiltered.toLocaleString()} OF {scopedWorks.length.toLocaleString()} RECORDS
         </span>
       </div>
@@ -170,12 +170,12 @@ export function Works() {
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         {/* Severity pills */}
-        <div className="flex items-center gap-0 border-2 border-[#1A1A18]">
+        <div className="flex flex-wrap gap-2">
           {(['ALL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => (
             <button
               key={sev}
               onClick={() => setSeverity(sev)}
-              className={`px-3 h-8 text-xs font-medium uppercase tracking-wider transition-colors border-r-2 border-[#1A1A18] last:border-r-0 ${
+              className={`px-3 h-8 text-xs font-medium uppercase tracking-wider transition-colors border-2 border-[#1A1A18] ${
                 severity === sev
                   ? 'bg-[#1A1A18] text-[#F5F2E8]'
                   : 'bg-white text-[#1A1A18] hover:bg-[#F5F2E8]'
@@ -216,7 +216,7 @@ export function Works() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="SEARCH WORK ID, MP, AGENCY..."
-          className="flex-1 min-w-[220px] px-3 h-8 text-xs border-2 border-[#1A1A18] bg-white text-[#1A1A18] placeholder:text-[#8A8680] outline-none focus:bg-[#F5F2E8] transition-colors font-medium uppercase tracking-wide"
+          className="min-w-[200px] flex-1 sm:flex-initial px-3 h-8 text-xs border-2 border-[#1A1A18] bg-white text-[#1A1A18] placeholder:text-[#8A8680] outline-none focus:bg-[#F5F2E8] transition-colors font-medium uppercase tracking-wide"
         />
 
         {/* Rows per page */}
@@ -236,14 +236,14 @@ export function Works() {
 
       {/* Table */}
       <div className="border-2 border-[#1A1A18] bg-white overflow-x-auto">
-        <table className="w-full text-sm border-collapse">
+        <table className="w-full text-sm border-collapse min-w-[720px]">
           <thead>
             <tr className="border-b-2 border-[#1A1A18] bg-[#F5F2E8]">
               {COLS.map((col) => (
                 <th
                   key={col.key}
                   onClick={() => toggleSort(col.key)}
-                  className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap cursor-pointer select-none hover:text-[#1A1A18]"
+                  className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap cursor-pointer select-none hover:text-[#1A1A18]"
                 >
                   <span className="inline-flex items-center gap-1">
                     {col.label}
@@ -268,46 +268,46 @@ export function Works() {
                 return (
                   <tr key={row.work_id} className="hover:bg-[#F5F2E8] transition-colors cursor-default">
                     {/* Work ID */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       <span className="font-mono text-xs font-medium text-[#1A1A18]">{row.work_id}</span>
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3 text-xs text-[#4A4845] max-w-[200px] truncate" title={row.work_category}>
+                    <td className="px-3 sm:px-4 py-3 text-xs text-[#4A4845] max-w-[200px] truncate" title={row.work_category}>
                       {row.work_category.length > 30 ? `${row.work_category.slice(0, 30)}\u2026` : row.work_category}
                     </td>
 
                     {/* State */}
-                    <td className="px-4 py-3 text-xs text-[#4A4845] whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 text-xs text-[#4A4845] whitespace-nowrap">
                       {row.state}
                     </td>
 
                     {/* MP */}
-                    <td className="px-4 py-3 text-xs text-[#4A4845] max-w-[160px] truncate" title={row.mp_name}>
+                    <td className="px-3 sm:px-4 py-3 text-xs text-[#4A4845] max-w-[160px] truncate" title={row.mp_name}>
                       {row.mp_name
                         ? (row.mp_name.length > 24 ? `${row.mp_name.slice(0, 24)}\u2026` : row.mp_name)
                         : '\u2014'}
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       <span className={`px-2 py-0.5 text-xs font-black uppercase tracking-wider ${statusStyle}`}>
                         {row.status}
                       </span>
                     </td>
 
                     {/* Cost */}
-                    <td className="px-4 py-3 text-xs font-medium text-[#1A1A18] whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 text-xs font-medium text-[#1A1A18] whitespace-nowrap">
                       {formatCost(row.cost_estimate)}
                     </td>
 
                     {/* Paid % */}
-                    <td className="px-4 py-3 text-xs font-medium text-[#4A4845] text-right whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 text-xs font-medium text-[#4A4845] text-right whitespace-nowrap">
                       {paidPct}%
                     </td>
 
                     {/* Risk */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       <span className={`px-2 py-0.5 text-xs font-black uppercase tracking-wider ${riskStyle}`}>
                         {row.risk_level.toUpperCase()} {Number(row.risk_score).toFixed(1)}
                       </span>
@@ -321,11 +321,11 @@ export function Works() {
       </div>
 
       {/* Pagination footer */}
-      <div className="mt-4 flex items-center justify-between">
-        <div className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">
           SHOWING {totalFiltered === 0 ? 0 : startIdx + 1}–{Math.min(startIdx + pageSize, totalFiltered)} OF {totalFiltered} RECORDS
-        </div>
-        <div className="flex items-center gap-3">
+        </span>
+        <div className="flex items-center gap-2 justify-between sm:justify-end">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}

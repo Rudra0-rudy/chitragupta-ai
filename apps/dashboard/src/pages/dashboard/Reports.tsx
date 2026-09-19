@@ -136,10 +136,10 @@ export function Reports() {
   }, [scopedRows])
 
   const triggerClass = "rounded-none text-xs font-medium uppercase tracking-wider px-4 py-3 h-auto border-t-0 border-r-0 border-b-0 border-l-4 border-l-transparent text-[#4A4845] bg-transparent hover:bg-[#E8C018] hover:text-[#1A1A18] data-active:bg-white data-active:text-[#1A1A18] data-active:border-l-[#C8302A] after:hidden"
-  const listClass = "bg-[#F5F2E8] border-b-2 border-[#1A1A18] rounded-none w-full justify-start gap-0 p-0 h-auto"
+  const listClass = "bg-[#F5F2E8] border-b-2 border-[#1A1A18] rounded-none w-full justify-start gap-0 p-0 h-auto overflow-x-auto max-w-full flex"
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex items-center gap-3 mb-8 border-b-2 border-[#1A1A18] pb-4">
         <FileBarChart2 className="w-5 h-5 text-[#1E3878]" strokeWidth={2} />
         <h1 className="text-xl font-black uppercase tracking-tight text-[#1A1A18]">Reports</h1>
@@ -166,15 +166,15 @@ export function Reports() {
             </div>
             
             <div className="border-2 border-[#1A1A18] bg-white overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
+              <table className="w-full text-sm border-collapse min-w-[720px]">
                 <thead>
                   <tr className="border-b-2 border-[#1A1A18] bg-[#F5F2E8]">
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680]">Anomaly Type</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Count</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">% of Anomalies</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Caught High</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Caught Medium</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Missed Low</th>
+                    <th className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Anomaly Type</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Count</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">% of Anomalies</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Caught High</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Caught Medium</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Missed Low</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-[#1A1A18]">
@@ -187,12 +187,12 @@ export function Reports() {
                   ) : (
                     anomalyData.map((d) => (
                       <tr key={d.anomaly_type} className="hover:bg-[#F5F2E8] transition-colors">
-                        <td className="px-4 py-3">{formatAnomalyType(d.anomaly_type)}</td>
-                        <td className="px-4 py-3 text-right">{d.count.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.pct.toFixed(1)}%</td>
-                        <td className="px-4 py-3 text-right">{d.high.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.medium.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.low.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 whitespace-nowrap">{formatAnomalyType(d.anomaly_type)}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.count.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.pct.toFixed(1)}%</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.high.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.medium.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.low.toLocaleString('en-IN')}</td>
                       </tr>
                     ))
                   )}
@@ -200,16 +200,12 @@ export function Reports() {
               </table>
             </div>
 
-            <div className="border-2 border-t-0 border-[#1A1A18] bg-[#FFFFFF] px-4 py-3 flex flex-wrap gap-x-2 gap-y-1 items-center justify-between text-xs font-medium uppercase tracking-wider text-[#8A8680]">
+            <div className="border-2 border-t-0 border-[#1A1A18] bg-[#FFFFFF] px-4 py-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 text-xs font-medium uppercase tracking-wider text-[#8A8680]">
               <span>Total anomalies: {totalAnomalies.toLocaleString('en-IN')}</span>
-              <span className="hidden sm:inline">·</span>
               <span>Caught (High): {caughtHigh.toLocaleString('en-IN')}</span>
-              <span className="hidden sm:inline">·</span>
               <span>Caught (Medium): {caughtMedium.toLocaleString('en-IN')}</span>
-              <span className="hidden sm:inline">·</span>
               <span>Missed (Low): {missedLow.toLocaleString('en-IN')}</span>
-              <span className="hidden sm:inline">·</span>
-              <span className="text-[#1E3878] font-black">Catch rate: {catchRate.toFixed(1)}%</span>
+              <span className="text-[#1E3878] font-black col-span-2 sm:col-span-1">Catch rate: {catchRate.toFixed(1)}%</span>
             </div>
           </TabsContent>
 
@@ -226,15 +222,15 @@ export function Reports() {
             </div>
             
             <div className="border-2 border-[#1A1A18] bg-white overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
+              <table className="w-full text-sm border-collapse min-w-[720px]">
                 <thead>
                   <tr className="border-b-2 border-[#1A1A18] bg-[#F5F2E8]">
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680]">MP Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680]">State</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Works</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">High Risk</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Avg Risk Score</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Total Sanctioned</th>
+                    <th className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">MP Name</th>
+                    <th className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">State</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Works</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">High Risk</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Avg Risk Score</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Total Sanctioned</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-[#1A1A18]">
@@ -247,14 +243,14 @@ export function Reports() {
                   ) : (
                     mpData.map((d) => (
                       <tr key={d.mp_name} className="hover:bg-[#F5F2E8] transition-colors">
-                        <td className="px-4 py-3 max-w-[240px] truncate" title={d.mp_name}>
+                        <td className="px-3 sm:px-4 py-3 max-w-[240px] truncate" title={d.mp_name}>
                           {d.mp_name.length > 40 ? `${d.mp_name.slice(0, 40)}…` : d.mp_name}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap">{d.state}</td>
-                        <td className="px-4 py-3 text-right">{d.works.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.high_risk.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.avg_risk.toFixed(1)}</td>
-                        <td className="px-4 py-3 text-right">{formatCrore(d.total_sanctioned)}</td>
+                        <td className="px-3 sm:px-4 py-3 whitespace-nowrap">{d.state}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.works.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.high_risk.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.avg_risk.toFixed(1)}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{formatCrore(d.total_sanctioned)}</td>
                       </tr>
                     ))
                   )}
@@ -276,14 +272,14 @@ export function Reports() {
             </div>
             
             <div className="border-2 border-[#1A1A18] bg-white overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
+              <table className="w-full text-sm border-collapse min-w-[720px]">
                 <thead>
                   <tr className="border-b-2 border-[#1A1A18] bg-[#F5F2E8]">
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680]">State</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Works</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">High Risk</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Avg Risk Score</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680]">Total Sanctioned</th>
+                    <th className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">State</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Works</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">High Risk</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Avg Risk Score</th>
+                    <th className="px-3 sm:px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">Total Sanctioned</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-[#1A1A18]">
@@ -296,11 +292,11 @@ export function Reports() {
                   ) : (
                     stateData.map((d) => (
                       <tr key={d.state} className="hover:bg-[#F5F2E8] transition-colors">
-                        <td className="px-4 py-3 whitespace-nowrap">{d.state}</td>
-                        <td className="px-4 py-3 text-right">{d.works.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.high_risk.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-right">{d.avg_risk.toFixed(1)}</td>
-                        <td className="px-4 py-3 text-right">{formatCrore(d.total_sanctioned)}</td>
+                        <td className="px-3 sm:px-4 py-3 whitespace-nowrap">{d.state}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.works.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.high_risk.toLocaleString('en-IN')}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{d.avg_risk.toFixed(1)}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">{formatCrore(d.total_sanctioned)}</td>
                       </tr>
                     ))
                   )}

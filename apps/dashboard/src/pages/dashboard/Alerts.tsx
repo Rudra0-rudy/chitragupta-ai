@@ -457,7 +457,7 @@ export function Alerts() {
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Page header */}
       <div className="flex items-center gap-3 mb-6 border-b-2 border-[#1A1A18] pb-4">
         <AlertTriangle className="w-5 h-5 text-[#C8302A]" strokeWidth={2} />
@@ -478,12 +478,12 @@ export function Alerts() {
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         {/* Severity pills */}
-        <div className="flex items-center gap-0 border-2 border-[#1A1A18]">
+        <div className="flex flex-wrap gap-2">
           {(['ALL', 'High', 'Medium', 'Low'] as const).map((sev) => (
             <button
               key={sev}
               onClick={() => setSeverityFilter(sev)}
-              className={`px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-colors border-r-2 border-[#1A1A18] last:border-r-0 ${
+              className={`px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-colors border-2 border-[#1A1A18] ${
                 severityFilter === sev
                   ? 'bg-[#1A1A18] text-[#F5F2E8]'
                   : 'bg-[#FFFFFF] text-[#1A1A18] hover:bg-[#F5F2E8]'
@@ -500,39 +500,38 @@ export function Alerts() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search work ID, state, MP, agency…"
-          className="flex-1 min-w-[220px] px-3 py-1.5 text-xs border-2 border-[#1A1A18] bg-[#FFFFFF] text-[#1A1A18] placeholder:text-[#8A8680] outline-none focus:bg-[#F5F2E8] transition-colors font-medium uppercase tracking-wide"
+          className="min-w-[200px] flex-1 sm:flex-initial px-3 py-1.5 text-xs border-2 border-[#1A1A18] bg-[#FFFFFF] text-[#1A1A18] placeholder:text-[#8A8680] outline-none focus:bg-[#F5F2E8] transition-colors font-medium uppercase tracking-wide"
         />
 
-        <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-wider text-[#8A8680]">ROWS:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
-              className="bg-white border-2 border-[#1A1A18] rounded-none h-8 text-xs font-medium uppercase tracking-wider px-2 outline-none cursor-pointer"
-            >
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          </div>
-          {/* Row counter */}
-          <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
-            SHOWING {totalFiltered.toLocaleString()} OF {scopedAlerts.length.toLocaleString()} RECORDS
-          </span>
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-xs uppercase tracking-wider text-[#8A8680]">ROWS:</span>
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="bg-white border-2 border-[#1A1A18] rounded-none h-8 text-xs font-medium uppercase tracking-wider px-2 outline-none cursor-pointer"
+          >
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
         </div>
+        
+        {/* Row counter */}
+        <span className="w-full sm:w-auto text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
+          SHOWING {totalFiltered.toLocaleString()} OF {scopedAlerts.length.toLocaleString()} RECORDS
+        </span>
       </div>
 
       {/* Table */}
       <div className="border-2 border-[#1A1A18] bg-[#FFFFFF] overflow-x-auto">
-        <table className="w-full text-sm border-collapse">
+        <table className="w-full text-sm border-collapse min-w-[720px]">
           <thead>
             <tr className="border-b-2 border-[#1A1A18] bg-[#F5F2E8]">
               {COLS.map((col) => (
                 <th
                   key={col.label}
                   onClick={col.sortable && col.key ? () => toggleSort(col.key as SortKey) : undefined}
-                  className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap ${
+                  className={`px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap ${
                     col.sortable ? 'cursor-pointer select-none hover:text-[#1A1A18]' : ''
                   }`}
                 >
@@ -566,7 +565,7 @@ export function Alerts() {
                     }`}
                   >
                     {/* Work ID */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
                         {isEscalated && (
                           <span className="text-[#1E3878] text-xs font-black">★</span>
@@ -578,39 +577,39 @@ export function Alerts() {
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3 text-xs text-[#4A4845] max-w-[180px] truncate" title={row.work_category}>
+                    <td className="px-3 sm:px-4 py-3 text-xs text-[#4A4845] max-w-[180px] truncate" title={row.work_category}>
                       {row.work_category}
                     </td>
 
                     {/* State */}
-                    <td className="px-4 py-3 text-xs text-[#4A4845] whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 text-xs text-[#4A4845] whitespace-nowrap">
                       {row.state}
                     </td>
 
                     {/* Risk Score */}
-                    <td className="px-4 py-3 min-w-[120px]">
+                    <td className="px-3 sm:px-4 py-3 min-w-[120px]">
                       <RiskBar score={parseFloat(row.risk_score)} />
                     </td>
 
                     {/* Severity */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       <span className={`px-2 py-0.5 text-xs font-black uppercase tracking-wider ${SEVERITY_BADGE[row.risk_level] ?? ''}`}>
                         {row.risk_level}
                       </span>
                     </td>
 
                     {/* ISO */}
-                    <td className="px-4 py-3">
+                    <td className="px-3 sm:px-4 py-3">
                       <ModelFlagCell flag={row.iso_flag} score={row.iso_score} />
                     </td>
 
                     {/* LOF */}
-                    <td className="px-4 py-3">
+                    <td className="px-3 sm:px-4 py-3">
                       <ModelFlagCell flag={row.lof_flag} score={row.lof_score} />
                     </td>
 
                     {/* Synthetic */}
-                    <td className="px-4 py-3">
+                    <td className="px-3 sm:px-4 py-3">
                       <SyntheticCell
                         isSynthetic={row.is_synthetic_anomaly}
                         anomalyType={row.anomaly_type}
@@ -625,11 +624,11 @@ export function Alerts() {
       </div>
 
       {/* Pagination Footer */}
-      <div className="mt-4 flex items-center justify-between">
-        <div className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680]">
           SHOWING {totalFiltered === 0 ? 0 : startIdx + 1}–{Math.min(startIdx + pageSize, totalFiltered)} OF {totalFiltered} RECORDS
-        </div>
-        <div className="flex items-center gap-3">
+        </span>
+        <div className="flex items-center gap-2 justify-between sm:justify-end">
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
