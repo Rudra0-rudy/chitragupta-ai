@@ -1,7 +1,9 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { HardHat, ChevronUp, ChevronDown } from 'lucide-react'
-import { ALERTS, TOTAL_COUNT } from '@/data/mockAlerts'
+import { ALERTS } from '@/data/mockAlerts'
 import type { AlertRow } from '@/data/mockAlerts'
+import { useRoleStore } from '@/stores/useRoleStore'
+import { filterByRole } from '@/lib/roleFilter'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -75,6 +77,11 @@ const COLS: { key: SortKey; label: string }[] = [
 // ---------------------------------------------------------------------------
 
 export function Works() {
+  const { activeRole } = useRoleStore()
+
+  // Role-scoped base dataset
+  const scopedWorks = useMemo(() => filterByRole(ALERTS, activeRole), [activeRole])
+
   // Filter state
   const [severity, setSeverity] = useState<SeverityFilter>('ALL')
   const [category, setCategory] = useState('All Categories')
@@ -89,10 +96,10 @@ export function Works() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
 
-  // Reset page on any filter/size change
+  // Reset page on any filter/size/role change
   useEffect(() => {
     setPage(1)
-  }, [severity, category, stateFilter, search, pageSize])
+  }, [severity, category, stateFilter, search, pageSize, activeRole])
 
   // Toggle sort: desc → asc → none → desc
   const toggleSort = useCallback((key: SortKey) => {
@@ -114,7 +121,7 @@ export function Works() {
   const filteredRows = useMemo<AlertRow[]>(() => {
     const q = search.trim().toLowerCase()
 
-    let rows = ALERTS.filter((row) => {
+    let rows = scopedWorks.filter((row) => {
       if (severity !== 'ALL' && row.risk_level.toUpperCase() !== severity) return false
       if (category !== 'All Categories' && row.work_category !== category) return false
       if (stateFilter !== 'All States' && row.state !== stateFilter) return false
@@ -141,7 +148,7 @@ export function Works() {
     }
 
     return rows
-  }, [severity, category, stateFilter, search, sortKey, sortDir])
+  }, [severity, category, stateFilter, search, sortKey, sortDir, scopedWorks])
 
   // Pagination
   const totalFiltered = filteredRows.length
@@ -156,7 +163,7 @@ export function Works() {
         <HardHat className="w-5 h-5 text-[#1E3878]" strokeWidth={2} />
         <h1 className="text-xl font-black uppercase tracking-tight text-[#1A1A18]">Works</h1>
         <span className="ml-auto text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
-          SHOWING {totalFiltered.toLocaleString()} OF {TOTAL_COUNT.toLocaleString()} RECORDS
+          SHOWING {totalFiltered.toLocaleString()} OF {scopedWorks.length.toLocaleString()} RECORDS
         </span>
       </div>
 

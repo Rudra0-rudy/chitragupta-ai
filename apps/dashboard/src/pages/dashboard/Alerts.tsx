@@ -3,6 +3,8 @@ import { AlertTriangle, ChevronUp, ChevronDown, X, CheckCircle2, ArrowUpRight } 
 import { motion, AnimatePresence } from 'framer-motion'
 import { ALERTS, TOTAL_COUNT } from '@/data/mockAlerts'
 import type { AlertRow } from '@/data/mockAlerts'
+import { useRoleStore } from '@/stores/useRoleStore'
+import { filterByRole } from '@/lib/roleFilter'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -28,21 +30,17 @@ const ANOMALY_LABEL: Record<string, string> = {
 }
 
 // ---------------------------------------------------------------------------
-// Model Validation — computed once at module level from ALERTS
-// ---------------------------------------------------------------------------
-
-const synthetic    = ALERTS.filter((r) => r.is_synthetic_anomaly === 'True')
-const injectedN    = synthetic.length
-const caughtHigh   = synthetic.filter((r) => r.risk_level === 'High').length
-const caughtMedium = synthetic.filter((r) => r.risk_level === 'Medium').length
-const missedLow    = synthetic.filter((r) => r.risk_level === 'Low').length
-const catchRate    = injectedN > 0 ? (((caughtHigh + caughtMedium) / injectedN) * 100).toFixed(1) : '0.0'
-
-// ---------------------------------------------------------------------------
 // Subcomponents
 // ---------------------------------------------------------------------------
 
-function ModelValidationPanel() {
+function ModelValidationPanel({ rows }: { rows: AlertRow[] }) {
+  const synthetic    = rows.filter((r) => r.is_synthetic_anomaly === 'True')
+  const injectedN    = synthetic.length
+  const caughtHigh   = synthetic.filter((r) => r.risk_level === 'High').length
+  const caughtMedium = synthetic.filter((r) => r.risk_level === 'Medium').length
+  const missedLow    = synthetic.filter((r) => r.risk_level === 'Low').length
+  const catchRate    = injectedN > 0 ? (((caughtHigh + caughtMedium) / injectedN) * 100).toFixed(1) : '0.0'
+
   const cells = [
     { label: 'Injected',        value: injectedN.toLocaleString(),    accent: false },
     { label: 'Caught (High)',   value: caughtHigh.toLocaleString(),   accent: false },
@@ -354,6 +352,11 @@ function AlertDetailSheet({
 // ---------------------------------------------------------------------------
 
 export function Alerts() {
+  const { activeRole } = useRoleStore()
+
+  // Role-scoped base dataset
+  const scopedAlerts = useMemo(() => filterByRole(ALERTS, activeRole), [activeRole])
+
   // Filter state
   const [severityFilter, setSeverityFilter] = useState<Severity | 'ALL'>('High')
   const [search, setSearch] = useState('')
@@ -362,10 +365,10 @@ export function Alerts() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
 
-  // Reset page on filter/search/size change
+  // Reset page on filter/search/size/role change
   useEffect(() => {
     setPage(1)
-  }, [severityFilter, search, pageSize])
+  }, [severityFilter, search, pageSize, activeRole])
 
   // Sort state — default: risk_score descending
   const [sortKey, setSortKey] = useState<SortKey>('risk_score')
@@ -400,7 +403,7 @@ export function Alerts() {
   // Filtered + sorted rows
   const filteredRows = useMemo(() => {
     const q = search.trim().toLowerCase()
-    let rows = ALERTS
+    let rows = scopedAlerts
 
     if (severityFilter !== 'ALL') {
       rows = rows.filter((r) => r.risk_level === severityFilter)
@@ -430,7 +433,7 @@ export function Alerts() {
     })
 
     return rows
-  }, [severityFilter, search, sortKey, sortDir])
+  }, [severityFilter, search, sortKey, sortDir, scopedAlerts])
 
   // Pagination slice
   const totalFiltered = filteredRows.length
@@ -438,9 +441,9 @@ export function Alerts() {
   const startIdx = (page - 1) * pageSize
   const pagedRows = filteredRows.slice(startIdx, startIdx + pageSize)
 
-  // KPI strip (live from filteredRows — represents current view)
-  const highCount   = useMemo(() => ALERTS.filter((r) => r.risk_level === 'High').length,   [])
-  const mediumCount = useMemo(() => ALERTS.filter((r) => r.risk_level === 'Medium').length, [])
+  // KPI strip — counts from scoped base, not filtered
+  const highCount   = useMemo(() => scopedAlerts.filter((r) => r.risk_level === 'High').length,   [scopedAlerts])
+  const mediumCount = useMemo(() => scopedAlerts.filter((r) => r.risk_level === 'Medium').length, [scopedAlerts])
 
   const COLS: { key: SortKey | null; label: string; sortable: boolean }[] = [
     { key: 'work_id',       label: 'Work ID',    sortable: true },
@@ -470,7 +473,7 @@ export function Alerts() {
       </div>
 
       {/* Model Validation Panel */}
-      <ModelValidationPanel />
+      <ModelValidationPanel rows={scopedAlerts} />
 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -515,7 +518,7 @@ export function Alerts() {
           </div>
           {/* Row counter */}
           <span className="text-xs font-medium uppercase tracking-wider text-[#8A8680] whitespace-nowrap">
-            SHOWING {totalFiltered.toLocaleString()} OF {TOTAL_COUNT.toLocaleString()} RECORDS
+            SHOWING {totalFiltered.toLocaleString()} OF {scopedAlerts.length.toLocaleString()} RECORDS
           </span>
         </div>
       </div>
