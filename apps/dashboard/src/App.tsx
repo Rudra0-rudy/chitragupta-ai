@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { Home } from '@/pages/Home'
 import { Login } from '@/pages/Login'
 import { Dashboard } from '@/pages/Dashboard'
+import { NotFound } from '@/pages/NotFound'
 
 // Dashboard shell
 import { DashboardLayout, DashboardIndexRedirect } from '@/components/dashboard/DashboardLayout'
@@ -82,6 +83,16 @@ function AnimatedRoutes() {
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
         </Route>
+
+        {/* 404 Catch-all */}
+        <Route
+          path="*"
+          element={
+            <PageTransitionWrapper>
+              <NotFound />
+            </PageTransitionWrapper>
+          }
+        />
       </Routes>
     </AnimatePresence>
   )
