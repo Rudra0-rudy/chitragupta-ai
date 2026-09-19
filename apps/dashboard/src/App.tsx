@@ -8,6 +8,7 @@ import { Home } from '@/pages/Home'
 import { Login } from '@/pages/Login'
 import { Dashboard } from '@/pages/Dashboard'
 import { NotFound } from '@/pages/NotFound'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 // Dashboard shell
 import { DashboardLayout, DashboardIndexRedirect } from '@/components/dashboard/DashboardLayout'
@@ -102,7 +103,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AnimatedRoutes />
+        <ErrorBoundary>
+          <AnimatedRoutes />
+        </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
   )
