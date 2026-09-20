@@ -1,61 +1,119 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+
+import { supabase } from "@/lib/supabase";
 
 interface User {
-  email: string
-  name: string
+  email: string;
+  name: string;
 }
 
 interface AuthContextType {
-  isAuthenticated: boolean
-  user: User | null
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  isAuthenticated: boolean;
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null)
-
-const MOCK_TOKEN = 'mock-jwt-token-chitragupta-ai-2024'
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    const storedUser = localStorage.getItem('auth_user')
-    if (token === MOCK_TOKEN && storedUser) {
-      setIsAuthenticated(true)
-      setUser(JSON.parse(storedUser))
-    }
-  }, [])
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const email = session.user.email ?? "";
 
-  const login = async (email: string, _password: string): Promise<void> => {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
+        const name =
+          session.user.user_metadata?.name ||
+          email
+            .split("@")[0]
+            .replace(/[._]/g, " ")
+            .replace(/\b\w/g, (c: string) => c.toUpperCase());
 
-    const mockUser: User = {
+        setUser({
+          email,
+          name,
+        });
+
+        setIsAuthenticated(true);
+      }
+    });
+
+    // Listen for login/logout changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const email = session.user.email ?? "";
+
+        const name =
+          session.user.user_metadata?.name ||
+          email
+            .split("@")[0]
+            .replace(/[._]/g, " ")
+            .replace(/\b\w/g, (c: string) => c.toUpperCase());
+
+        setUser({
+          email,
+          name,
+        });
+
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const login = async (email: string, password: string): Promise<void> => {
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      name: email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-    }
+      password,
+    });
 
-    localStorage.setItem('auth_token', MOCK_TOKEN)
-    localStorage.setItem('auth_user', JSON.stringify(mockUser))
-    setUser(mockUser)
-    setIsAuthenticated(true)
-  }
+    if (error) {
+      throw error;
+    }
+  };
 
   const logout = () => {
-    localStorage.removeItem('auth_token')
-    localStorage.removeItem('auth_user')
-    setIsAuthenticated(false)
-    setUser(null)
-  }
+    supabase.auth.signOut();
+  };
 
-  return <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider')
-  return ctx
+  const ctx = useContext(AuthContext);
+
+  if (!ctx) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+
+  return ctx;
 }
