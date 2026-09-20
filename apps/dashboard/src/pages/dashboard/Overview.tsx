@@ -269,9 +269,10 @@ export function Overview() {
               outerRadius={110}
               strokeWidth={2}
               stroke="#1A1A18"
-              label={({ label, percent }: { label: string; percent: number }) =>
-                `${label} ${(percent * 100).toFixed(0)}%`
-              }
+              label={(props) => {
+                const p = props as { label?: string; percent?: number }
+                return `${p.label ?? ''} ${((p.percent ?? 0) * 100).toFixed(0)}%`
+              }}
               labelLine={{ stroke: '#4A4845', strokeWidth: 1 }}
             >
               {riskData.map((seg) => (
@@ -286,7 +287,7 @@ export function Overview() {
                 fontSize: 12,
                 fontFamily: 'Inter Variable, sans-serif',
               }}
-              formatter={(value: number, name: string) => [`${value}%`, name]}
+              formatter={(value, name) => [`${value}%`, String(name)]}
             />
             <Legend
               wrapperStyle={{ fontSize: 12, fontFamily: 'Inter Variable, sans-serif', paddingTop: 12 }}
