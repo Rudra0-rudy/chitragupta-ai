@@ -1,32 +1,27 @@
-# React + TypeScript + Vite
+# Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The Chitragupta AI frontend — Vite + React 19 + TypeScript.
 
-Currently, two official plugins are available:
+## Linting
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Linting is enforced in CI by **ESLint**, invoked via `pnpm lint` (which runs `eslint .` from this directory). The configuration is `eslint.config.js`, which re-exports the shared `@repo/eslint-config/react-library` preset from `packages/eslint-config/`.
+
+`oxlint` is also installed and configured via `.oxlintrc.json` for editor-time checks, but it is **not** what CI runs. To extend the Oxlint configuration, edit `.oxlintrc.json` directly and see the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
 
 ## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The React Compiler is not enabled because of its impact on dev and build performance. To add it, see the [React Compiler installation docs](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the Oxlint configuration
+## Scripts
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Defined in `package.json`:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+| Script | Command | Purpose |
+|---|---|---|
+| `pnpm dev` | `vite` | Start the Vite dev server on port 3001 |
+| `pnpm build` | `tsc -b && vite build` | Type-check and produce a production build in `dist/` |
+| `pnpm lint` | `eslint .` | Run ESLint (this is what CI invokes) |
+| `pnpm preview` | `vite preview` | Serve the production build locally |
+| `pnpm test` | `vitest run` | Run the Vitest suite once |
+| `pnpm test:watch` | `vitest` | Run the Vitest suite in watch mode |
+| `pnpm check-types` | `tsc --noEmit` | Type-check without emitting files |

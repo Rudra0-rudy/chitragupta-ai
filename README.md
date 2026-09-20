@@ -295,6 +295,7 @@ chitragupta-ai/
 ├── apps/
 │   ├── dashboard/       # Vite + React 19 frontend
 │   └── backend/         # Flask orchestration API
+├── .github/             # GitHub Actions workflows
 ├── ChitraGupta_Ai_api/  # Standalone Flask ML API
 ├── packages/            # Shared packages (Turborepo)
 ├── pnpm-workspace.yaml
@@ -315,6 +316,8 @@ Scripts defined in the root `package.json`:
 | `pnpm test` | `turbo run test` |
 | `pnpm format` | `prettier --write "**/*.{ts,tsx,md}"` |
 | `pnpm check-types` | `turbo run check-types` |
+
+**Note:** `pnpm lint` currently only lints `apps/dashboard` — no other workspace package defines a `lint` script, so Turbo skips them.
 
 ## Deployment
 
@@ -417,12 +420,24 @@ because the shadcn CLI will overwrite them on the next `add` run.
 - Push protection is enabled on this repository. GitHub will block any push
   containing a pattern that matches a recognized Supabase secret.
 
+## Continuous Integration
+
+CI is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and runs on every pull request targeting `main` and every push to `main`. A single job, `Lint and type-check`, executes:
+
+1. `pnpm install --frozen-lockfile`
+2. `pnpm check-types`
+3. `pnpm lint`
+
+Pull requests must pass this job before merge.
+
+If you change dependencies in any workspace `package.json`, commit the regenerated `pnpm-lock.yaml` in the same commit. CI fails on a lockfile mismatch.
+
 ## Contributing
 
 - Branch names: `feature/*`, `fix/*`, `chore/*`, `docs/*`
 - Commit messages: use Conventional Commits prefixes — `feat:`, `fix:`,
   `chore:`, `docs:`
-- Pull requests require one approval before merge
+- Pull requests require one approval before merge and must pass the `Lint and type-check` CI job
 
 ## Further reading
 
