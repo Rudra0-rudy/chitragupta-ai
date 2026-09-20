@@ -316,6 +316,44 @@ Scripts defined in the root `package.json`:
 | `pnpm format` | `prettier --write "**/*.{ts,tsx,md}"` |
 | `pnpm check-types` | `turbo run check-types` |
 
+## Deployment
+
+The frontend and backend deploy to two different platforms. Config files for
+both are checked into the repo.
+
+### Frontend — Vercel
+
+- Config: [`apps/dashboard/vercel.json`](apps/dashboard/vercel.json)
+- Build command: `pnpm build`
+- Output directory: `dist`
+- Environment variables to set in the Vercel project settings:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_PUBLISHABLE_KEY`
+  - `VITE_BACKEND_URL` — full URL of the deployed backend (see below)
+
+The `rewrites` rule in `vercel.json` forwards every request to `index.html`
+so client-side routes (`/dashboard/overview`, etc.) work on direct navigation.
+Without it, Vercel returns a 404 for any path that has no physical file.
+
+### Backend — Render
+
+- Config: [`render.yaml`](render.yaml) at the repo root
+- Root directory: `apps/backend/`
+- Build command: `pip install --upgrade pip && pip install -r requirements.txt`
+- Start command: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120`
+- Environment variables (set in the Render dashboard, not committed):
+  - `SUPABASE_URL`
+  - `SUPABASE_KEY` — service-role key, never exposed to the frontend
+
+Once Render assigns a service URL, set it as `VITE_BACKEND_URL` in the
+Vercel project settings and trigger a frontend redeploy.
+
+### ML API — already deployed
+
+`ChitraGupta_Ai_api/` is a separate service deployed on Render. Its URL is
+hardcoded in `apps/backend/routes/analysis.py` as `ML_API_URL`. It is not
+affected by these deployment steps.
+
 ## Development workflows
 
 ### Adding a shadcn/ui component
