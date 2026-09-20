@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { AlertTriangle, ChevronUp, ChevronDown, X, CheckCircle2, ArrowUpRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ALERTS, TOTAL_COUNT } from '@/data/mockAlerts'
+import { ALERTS } from '@/data/mockAlerts'
 import type { AlertRow } from '@/data/mockAlerts'
 import { useRoleStore } from '@/stores/useRoleStore'
 import { filterByRole } from '@/lib/roleFilter'
