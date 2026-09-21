@@ -131,6 +131,9 @@ def upload_csv():
             BytesIO(file_bytes)
         )
 
+        # Remove completely blank rows
+        df = df.dropna(how="all")
+
 
         # =====================================
         # 4. Validate columns
@@ -201,6 +204,7 @@ def upload_csv():
             "Content-Type":
                 "text/csv"
         }
+
         print("SUPABASE URL:", SUPABASE_URL)
         print("STORAGE BUCKET:", STORAGE_BUCKET)
         print("STORAGE PATH:", storage_path)
@@ -217,11 +221,13 @@ def upload_csv():
         print("SUPABASE STATUS:", storage_response.status_code)
         print("SUPABASE RESPONSE:", storage_response.text)
 
+
         # =====================================
         # 7. Check Storage upload
         # =====================================
 
         if storage_response.status_code not in (200, 201):
+
             return {
                 "error": "Supabase Storage upload failed",
                 "status_code": storage_response.status_code,
