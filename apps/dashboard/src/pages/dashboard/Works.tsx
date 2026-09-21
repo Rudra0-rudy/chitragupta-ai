@@ -25,6 +25,8 @@ import { useRoleStore } from '@/stores/useRoleStore'
 
 import { filterByRole } from '@/lib/roleFilter'
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://127.0.0.1:5000'
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -273,7 +275,7 @@ export function Works() {
       formData.append('file', selectedFile)
 
       const response = await fetch(
-        'http://127.0.0.1:5000/api/upload-csv',
+        `${BACKEND_URL}/api/upload-csv`,
         {
           method: 'POST',
           body: formData,

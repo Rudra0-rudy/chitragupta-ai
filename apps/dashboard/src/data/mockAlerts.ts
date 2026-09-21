@@ -34,6 +34,6 @@ export interface AlertRow {
   risk_score: string
 }
 
-export const ALERTS: AlertRow[] = parseCsv(csvRaw) as AlertRow[]
+export const ALERTS: AlertRow[] = parseCsv(csvRaw) as unknown as AlertRow[]
 
 export const TOTAL_COUNT = ALERTS.length
